@@ -1,10 +1,9 @@
-import org.springframework.http.HttpStatus;
+package com.example.demo.user;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,19 +20,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> one(@PathVariable long id) {
-        return svc.get(id)
-            .map(u -> Map.of(
-                "id", u.getId(),
-                "name", u.getName()
-            ))
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> {
-                Map<String, Object> error = new HashMap<>();
-                error.put("status", 404);
-                error.put("error", "Not Found");
-                error.put("message", "User with id " + id + " not found");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-            });
+    public ResponseEntity<User> one(@PathVariable long id) {
+        User u = svc.get(id);
+        return u == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(u);
     }
 }
