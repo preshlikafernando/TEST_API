@@ -1,8 +1,7 @@
-package com.example.demo.user;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -13,10 +12,19 @@ public class UserService {
     }
 
     public List<User> list() {
-        return repo.findAll();
+        try {
+            return repo.findAll();
+        } catch (Exception e) {
+            // Log error in real app
+            return List.of(); // return empty list instead of throwing
+        }
     }
 
-    public User get(long id) {
-        return repo.findById(id);
+    public Optional<User> get(long id) {
+        try {
+            return repo.findById(id);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }
